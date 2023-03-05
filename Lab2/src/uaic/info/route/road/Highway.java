@@ -1,20 +1,22 @@
 package uaic.info.route.road;
 
+import uaic.info.route.location.Location;
+
 public class Highway extends Road{
-	private float maximSpeed;
 	private float timeDelay;
 	
 	public Highway() {
 		super();
 	}
 
-
-	public Highway(float maximSpeed,float timeDelay) {
-		super();
-		this.maximSpeed = maximSpeed;
-		this.timeDelay = timeDelay;
+	public Highway(String name, Location first, Location second, float speedLimit, float roadLength) {
+		super(name, first, second, speedLimit, roadLength);
 	}
 
+	public Highway(String name, Location first, Location second, float speedLimit, float roadLength, float timeDelay) {
+		super(name, first, second, speedLimit, roadLength);
+		this.timeDelay = timeDelay;
+	}
 
 	public float getTimeDelay() {
 		return timeDelay;
@@ -24,17 +26,5 @@ public class Highway extends Road{
 	public void setTimeDelay(float timeDelay) {
 		this.timeDelay = timeDelay;
 	}
-
-
-	public float getMaximSpeed() {
-		return maximSpeed;
-	}
-
-
-	public void setMaximSpeed(float maximSpeed) {
-		this.maximSpeed = maximSpeed;
-	}
-	
-	
 	
 }

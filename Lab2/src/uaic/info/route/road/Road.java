@@ -10,6 +10,8 @@ public abstract class Road {
 	private String name;
 	private Location firstEndPoint;
 	private Location secondEndPoint;
+	private float speedLimit;
+	private float roadLength;
 	private RoadType type;
 	
 	public Road()
@@ -19,24 +21,15 @@ public abstract class Road {
 		this.secondEndPoint = null;
 		this.type = null;
 	}
-	
-	
-	public Road(String name, Location first, Location second)
+	public Road(String name, Location first, Location second,float speedLimit, float roadLength)
 	{
 		this.name = name;
 		this.firstEndPoint = first;
 		this.secondEndPoint = second;
+		this.speedLimit = speedLimit;
 		this.type = RoadType.STREET;
+		this.roadLength = roadLength;
 	}
-	
-	public Road(String name, Location first, Location second,RoadType type)
-	{
-		this.name = name;
-		this.firstEndPoint = first;
-		this.secondEndPoint = second;
-		this.type = type;
-	}
-
 	public RoadType getType() {
 		return type;
 	}
@@ -71,29 +64,42 @@ public abstract class Road {
 		this.secondEndPoint = secondEndPoint;
 	}
 
-	@Override
-	public String toString() {
-		return "Road [name=" + name + ", firstEndPoint=" + firstEndPoint + ", secondEndPoint=" + secondEndPoint +  ", type=" + type + "]";
+	public float getSpeedLimit() {
+		return speedLimit;
 	}
-	
+
+	public void setSpeedLimit(float speedLimit) {
+		this.speedLimit = speedLimit;
+	}
+
+	public float getRoadLength() {
+		return roadLength;
+	}
+
+	public void setRoadLength(float roadLength) {
+		this.roadLength = roadLength;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Road road = (Road) o;
+		return Objects.equals(name, road.name) && Objects.equals(firstEndPoint, road.firstEndPoint) && Objects.equals(secondEndPoint, road.secondEndPoint);
+	}
+
 	@Override
 	public int hashCode() {
-		return Objects.hash(firstEndPoint, name, secondEndPoint);
+		return Objects.hash(name, firstEndPoint, secondEndPoint);
 	}
-
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)	 
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Road other = (Road) obj;
-		return Objects.equals(name, other.name) && ( Objects.equals(firstEndPoint, other.firstEndPoint)
-				&& Objects.equals(secondEndPoint, other.secondEndPoint));
+	public String toString() {
+		return "Road{" +
+				"name='" + name + '\'' +
+				", firstEndPoint=" + firstEndPoint +
+				", secondEndPoint=" + secondEndPoint +
+				", speedLimit=" + speedLimit +
+				'}';
 	}
-
-	
 }

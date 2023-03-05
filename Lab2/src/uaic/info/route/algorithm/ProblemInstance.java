@@ -23,11 +23,13 @@ public class ProblemInstance {
 		{
 			if(objects[i] instanceof Location)
 			{
-				locations.add((Location) objects[i]);
+				if(locations.contains(objects[i]) == false)
+					locations.add((Location) objects[i]);
 			}
 			else if(objects[i] instanceof Road)
 			{
-				roads.add((Road) objects[i]);
+				if(roads.contains(objects[i]) == false)
+					roads.add((Road) objects[i]);
 			}
 			else
 			{
@@ -54,14 +56,32 @@ public class ProblemInstance {
 	
 	public void addLocation(Location location)
 	{
-		locations.add(location);
+		if(locations.contains(location) == false)
+			locations.add(location);
+		else
+			System.out.println("The location " + location.toString() + " is already in the instance");
 	}
 	
 	public void addRoad(Road road)
 	{
-		roads.add(road);
+		if(roads.contains(road) == false)
+			roads.add(road);
+		else
+			System.out.println("The road " + road.toString() + " is already in the instance");
 	}
-	
+
+	public ArrayList<Road> getRoadsForLocation(Location location)
+	{
+		ArrayList<Road> locationRoads = new ArrayList<>();
+		for(Road road : roads)
+		{
+			if(road.getFirstEndPoint().equals(location)
+					|| road.getSecondEndPoint().equals(location))
+				locationRoads.add(road);
+		}
+
+		return locationRoads;
+	}
 	public boolean existsLocation(Location location)
 	{
 		return locations.contains(location);

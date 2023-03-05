@@ -3,11 +3,20 @@ package uaic.info.route.location;
 public class City extends Location{
 	private int population;
 	private int area;
-	
-	public City(int population, int area) {
-		super();
+
+	public City(String name, int x, int y, int population, int area) {
+		super(name, x, y);
 		this.population = population;
 		this.area = area;
+	}
+	public City(String name,int x, int y)
+	{
+		super(name,x,y);
+	}
+
+	public City(String name)
+	{
+		super(name);
 	}
 	public City() {
 		super();
