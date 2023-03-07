@@ -9,11 +9,11 @@ public class Highway extends Road{
 		super();
 	}
 
-	public Highway(String name, Location first, Location second, float speedLimit, float roadLength) {
+	public Highway(String name, Location first, Location second, double speedLimit, double roadLength) {
 		super(name, first, second, speedLimit, roadLength);
 	}
 
-	public Highway(String name, Location first, Location second, float speedLimit, float roadLength, float timeDelay) {
+	public Highway(String name, Location first, Location second, double speedLimit, double roadLength, float timeDelay) {
 		super(name, first, second, speedLimit, roadLength);
 		this.timeDelay = timeDelay;
 	}

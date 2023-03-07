@@ -2,11 +2,16 @@ package uaic.info.route.location;
 
 import java.util.Objects;
 
+/**
+ *  Abstract class representing the Location. For any new type of location, all it needs to do is
+ *  to extend this class
+ *
+ */
 public abstract class Location {
 
 	private String name;
-	private int x;
-	private int y;
+	private double x;
+	private double y;
 	
 	public Location()
 	{
@@ -22,7 +27,7 @@ public abstract class Location {
 		this.y = 0;
 	}
 	
-	public Location(String name, int x, int y)
+	public Location(String name, double x, double y)
 	{
 		this.name = name;
 		this.x = x;
@@ -35,13 +40,13 @@ public abstract class Location {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public int getX() {
+	public double getX() {
 		return x;
 	}
 	public void setX(int x) {
 		this.x = x;
 	}
-	public int getY() {
+	public double getY() {
 		return y;
 	}
 	public void setY(int y) {
@@ -58,6 +63,12 @@ public abstract class Location {
 		return Objects.hash(name, x, y);
 	}
 
+	/**
+	 * This method verifies if the given object is equal with the current Location. They are equals
+	 * if they have the same name and are at the same coordinates
+	 * @param obj
+	 * @return true if the object is equal to the Location, false otherwise
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

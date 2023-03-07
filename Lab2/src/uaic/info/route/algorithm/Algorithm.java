@@ -7,9 +7,23 @@ import java.util.HashMap;
 import uaic.info.route.location.Location;
 import uaic.info.route.road.Road;
 
+/**
+ *  This class represents the implementation of the algorithm that solves the problem given
+ */
 public class Algorithm {
-	
+
+	/**
+	 *  Adjacency List for every "node" of the "graph" (a "node" is represented by a  Location itself
+	 *  and an "edge" is represented by a Road between those two Locations)
+	 */
 	HashMap<Location,ArrayList<Location>> adjacencyList = new HashMap<>();
+
+	/**
+	 * This method validate the problem instance. An instance is valid if it contains all the Locations
+	 * that the Roads are connecting and if a Road is at least the length of the distance between two Locations
+	 * @param instance
+	 * @return true if valid, false otherwise
+	 */
 	public boolean validateInstance(ProblemInstance instance)
 	{
 		ArrayList<Location> locations = instance.getLocations();
@@ -20,10 +34,10 @@ public class Algorithm {
 			if(locations.contains(road.getFirstEndPoint()) == false
 					|| locations.contains(road.getSecondEndPoint()) == false)
 				return false;
-			int x1 = road.getFirstEndPoint().getX();
-			int x2 = road.getSecondEndPoint().getX();
-			int y1 = road.getFirstEndPoint().getY();
-			int y2 = road.getSecondEndPoint().getY();
+			double x1 = road.getFirstEndPoint().getX();
+			double x2 = road.getSecondEndPoint().getX();
+			double y1 = road.getFirstEndPoint().getY();
+			double y2 = road.getSecondEndPoint().getY();
 
 			if(road.getRoadLength() < Math.sqrt(((x1-x2) * (x1-x2) + (y1-y2) * (y1-y2))))
 				return false;
@@ -33,13 +47,24 @@ public class Algorithm {
 		return true;
 	}
 
+	/**
+	 * This method populate the adjacency list with the data from the instance, if the instance is valid
+	 * @param instance
+	 */
 	public void createAdjacencyList(ProblemInstance instance) {
 		adjacencyList.clear();
 		if (validateInstance(instance) == false)
 			return;
+		/**
+		 * We create an ArrayList for every Location
+		 */
 		for (Location location : instance.getLocations()) {
 			adjacencyList.put(location, new ArrayList<>());
 		}
+		/**
+		 * If there is a Road between two Locations, we add one end point to the others adjacency list,
+		 * and vice-versa
+		 */
 		for (Road road : instance.getRoads()) {
 			Location l1 = road.getFirstEndPoint();
 			Location l2 = road.getSecondEndPoint();
@@ -48,11 +73,22 @@ public class Algorithm {
 		}
 	}
 
+	/**
+	 * Recursive function to perform a DFS on the unordered graph until we found the second Location
+	 * given as a parameter
+	 * @param l1
+	 * @param l2
+	 * @param visited A Location is marked as visited if we already called this method on that Location
+	 * @return true if we found the second location by performing a DFS, false otherwise
+	 */
 	private boolean DFS(Location l1, Location l2, HashMap<Location, Boolean> visited) {
 		if (l1.equals(l2))
 			return true;
 		if (visited.get(l1) == true)
 			return false;
+		/**
+		 * Mark the Location as visited
+		 */
 		visited.put(l1, true);
 		for (Location location : adjacencyList.get(l1))
 			if (DFS(location, l2, visited) == true) {
@@ -61,6 +97,13 @@ public class Algorithm {
 		return false;
 	}
 
+	/**
+	 * Verify if there is a path between those two Locations in the given problem instance
+	 * @param instance
+	 * @param l1
+	 * @param l2
+	 * @return true if there is such a path, false otherwise
+	 */
 	public boolean existRoute(ProblemInstance instance, Location l1, Location l2) {
 		createAdjacencyList(instance);
 		if (adjacencyList.containsKey(l1) == false)
@@ -74,16 +117,31 @@ public class Algorithm {
 
 	}
 
+	/**
+	 * This method performs the Dijkstra Algorithm in order to find the shortest path between the given
+	 * two Locations. First it tests if there is such a path between the Locations, and then it uses a HashMap
+	 * in order to keep track of the smallest cost to get to that position
+	 * @param instance
+	 * @param l1
+	 * @param l2
+	 * @return ArrayList of Roads representing the smallest path
+	 */
 	public ArrayList<Road> getShortestPath(ProblemInstance instance,Location l1,Location l2)
 	{
+		/**
+		 * Verify if there exists at least one path between those two locations
+		 */
 		if(existRoute(instance,l1,l2) == false)
 			return null;
 		else
 		{
-			HashMap<Location,Float> costs = new HashMap<>();
+			/**
+			 * Cost map and it's initialization - using Float.Max_Value as a substitute for infinite
+			 */
+			HashMap<Location,Double> costs = new HashMap<>();
 			for(Location location : instance.getLocations())
 			{
-				costs.put(location, Float.MAX_VALUE);
+				costs.put(location, Double.MAX_VALUE);
 			}
 			//costs.put(l1,0f);
 			Location smallestLocation = l1;
@@ -96,11 +154,16 @@ public class Algorithm {
 			Location aux = null;
 			while(availableLocations.contains(l2) == false)
 			{
-				float smallestCost = Float.MAX_VALUE;
+				double smallestCost = Double.MAX_VALUE;
 				boolean found = false;
 				for(Road road : availableRoads)
 				{
-
+					/**
+					 *  We test all the possible Roads to get to the unvisited locations. If we found at least
+					 *  one new Location, we update it's cost. After all iterations of the for, we get
+					 *  the Location with the smallest cost and the Road that lead to it and add it
+					 *  to the path and list of visited locations
+					 */
 					if(availableLocations.contains(road.getFirstEndPoint()))
 					{
 						aux = road.getSecondEndPoint();
@@ -113,7 +176,7 @@ public class Algorithm {
 					}
 					if(found == false)
 						break;
-					float previousCost = costs.get(aux);
+					double previousCost = costs.get(aux);
 					if(previousCost != Float.MAX_VALUE)
 					{
 						if(road.getRoadLength()  + previousCost< smallestCost)

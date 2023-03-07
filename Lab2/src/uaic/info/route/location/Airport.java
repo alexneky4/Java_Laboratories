@@ -13,11 +13,11 @@ public class Airport extends Location{
 		super(name);
 	}
 
-	public Airport(String name, int x, int y) {
+	public Airport(String name, double x, double y) {
 		super(name, x, y);
 	}
 
-	public Airport(String name, int x, int y, int numberOfAirstrips, int area) {
+	public Airport(String name, double x, double y, int numberOfAirstrips, int area) {
 		super(name, x, y);
 		this.numberOfAirstrips = numberOfAirstrips;
 		this.area = area;

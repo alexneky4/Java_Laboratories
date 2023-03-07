@@ -9,11 +9,11 @@ public class Street extends Road{
 		super();
 	}
 
-	public Street(String name, Location first, Location second, float speedLimit, float roadLength) {
+	public Street(String name, Location first, Location second, double speedLimit, double roadLength) {
 		super(name, first, second, speedLimit, roadLength);
 	}
 
-	public Street(String name, Location first, Location second, float speedLimit, float roadLength, int numberOfTrafficLights) {
+	public Street(String name, Location first, Location second, double speedLimit, double roadLength, int numberOfTrafficLights) {
 		super(name, first, second, speedLimit, roadLength);
 		this.numberOfTrafficLights = numberOfTrafficLights;
 	}

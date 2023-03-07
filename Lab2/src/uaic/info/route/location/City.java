@@ -4,12 +4,12 @@ public class City extends Location{
 	private int population;
 	private int area;
 
-	public City(String name, int x, int y, int population, int area) {
+	public City(String name, double x, double y, int population, int area) {
 		super(name, x, y);
 		this.population = population;
 		this.area = area;
 	}
-	public City(String name,int x, int y)
+	public City(String name,double x, double y)
 	{
 		super(name,x,y);
 	}
