@@ -164,6 +164,9 @@ public class Algorithm {
 					 *  the Location with the smallest cost and the Road that lead to it and add it
 					 *  to the path and list of visited locations
 					 */
+					if(availableLocations.contains(road.getFirstEndPoint())
+							&& availableLocations.contains(road.getSecondEndPoint()))
+						continue;
 					if(availableLocations.contains(road.getFirstEndPoint()))
 					{
 						aux = road.getSecondEndPoint();
@@ -177,7 +180,7 @@ public class Algorithm {
 					if(found == false)
 						break;
 					double previousCost = costs.get(aux);
-					if(previousCost != Float.MAX_VALUE)
+					if(previousCost != Double.MAX_VALUE)
 					{
 						if(road.getRoadLength()  + previousCost< smallestCost)
 						{
@@ -189,7 +192,7 @@ public class Algorithm {
 					else if(road.getRoadLength() < smallestCost)
 					{
 						smallestLocation = aux;
-						smallestCost = road.getRoadLength() + previousCost;
+						smallestCost = road.getRoadLength();
 						addedRoad = road;
 					}
 

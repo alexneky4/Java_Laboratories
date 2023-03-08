@@ -110,6 +110,14 @@ public class ProblemInstance {
 		return locationRoads;
 	}
 
+	/**
+	 *  Static method that generates a random instance of the problem. It takes the number of locations
+	 *  and the number of roads. We verify that the number of roads do not exceed the maximum possible number.
+	 *  After that, we randomly generate locations and roads.
+	 * @param maxNumberOfLocations
+	 * @param maxNumberOfRoads
+	 * @return
+	 */
 	public static ProblemInstance generateRandomInstance(int maxNumberOfLocations, int maxNumberOfRoads)
 	{
 		ProblemInstance instance = new ProblemInstance();

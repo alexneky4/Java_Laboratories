@@ -12,7 +12,7 @@ public abstract class Location {
 	private String name;
 	private double x;
 	private double y;
-	
+	//private LocationType type;
 	public Location()
 	{
 		this.name = "";
@@ -52,6 +52,11 @@ public abstract class Location {
 	public void setY(int y) {
 		this.y = y;
 	}
+
+	/*
+		public void setLocationType(LocationType type) {this.type = type;}
+		public LocationType getLocationType() {return type;}
+	 */
 	
 	@Override
 	public String toString() {
