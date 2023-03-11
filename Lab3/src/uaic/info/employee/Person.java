@@ -60,5 +60,9 @@ public class Person implements Node,Comparable<Person> {
         relationship.put(node,relation);
     }
 
-
+    @Override
+    public double getWeight()
+    {
+        return relationship.size();
+    }
 }
