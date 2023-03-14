@@ -4,8 +4,8 @@ public interface Node {
 
     String getName();
 
-    default double getWeight()
+    default int getWeight()
     {
-        return 0.0;
+        return 0;
     }
 }

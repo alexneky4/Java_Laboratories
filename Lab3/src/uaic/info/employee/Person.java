@@ -3,12 +3,13 @@ package uaic.info.employee;
 import uaic.info.node.Node;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public class Person implements Node,Comparable<Person> {
 
     private String name;
     private String birthdate;
-    private HashMap<Node,String> relationship;
+    private HashMap<Node,String> relationship = new HashMap<>();
 
     public Person() {
     }
@@ -61,7 +62,28 @@ public class Person implements Node,Comparable<Person> {
     }
 
     @Override
-    public double getWeight()
+    public String toString() {
+        return "Person{" +
+                "name='" + name + '\'' +
+                ", birthdate='" + birthdate + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Person person = (Person) o;
+        return Objects.equals(name, person.name) && Objects.equals(birthdate, person.birthdate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, birthdate);
+    }
+
+    @Override
+    public int getWeight()
     {
         return relationship.size();
     }
