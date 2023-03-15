@@ -1,11 +1,13 @@
 package uaic.info.node;
 
+import java.util.List;
+import java.util.Map;
+
 public interface Node {
 
     String getName();
 
-    default int getWeight()
-    {
-        return 0;
-    }
+    List<Node> getAdjacencyList();
+
+    int getWeight();
 }

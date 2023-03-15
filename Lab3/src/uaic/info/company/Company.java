@@ -10,7 +10,7 @@ import java.util.Objects;
 public class Company implements Node,Comparable<Company> {
 
     private String name;
-   // private List<Person> employees = new ArrayList<>();
+    private List<Person> employees = new ArrayList<>();
 
     public Company(String name) {
         this.name = name;
@@ -51,28 +51,33 @@ public class Company implements Node,Comparable<Company> {
                 '}';
     }
 
-   // public List<Person> getEmployees() {
-   //     return employees;
-   // }
+    public List<Person> getEmployees() {
+        return employees;
+    }
 
-   // public void addEmployee(Person person)
-   // {
-   //     employees.add(person);
-  //  }
+    public void addEmployee(Person person)
+    {
+        employees.add(person);
+    }
 
-   // @Override
-   // public int getWeight()
-    //{
-    //    return employees.size();
-   // }
-   // public void setEmployees(List<Person> employees) {
-    //    this.employees = employees;
-  //  }
+    @Override
+    public int getWeight()
+    {
+        return employees.size();
+    }
+    public void setEmployees(List<Person> employees) {
+        this.employees = employees;
+    }
 
 
 
     @Override
     public int compareTo(Company company) {
         return this.name.compareTo(company.name);
+    }
+    @Override
+    public List<Node> getAdjacencyList()
+    {
+        return new ArrayList<Node>(this.employees);
     }
 }

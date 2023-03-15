@@ -1,8 +1,11 @@
 package uaic.info.employee;
 
+import uaic.info.company.Company;
 import uaic.info.node.Node;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 public class Person implements Node,Comparable<Person> {
@@ -58,7 +61,15 @@ public class Person implements Node,Comparable<Person> {
 
     public void addNewRelationship(Node node, String relation)
     {
-        relationship.put(node,relation);
+            relationship.putIfAbsent(node,relation);
+        if(node instanceof Person)
+        {
+            ((Person)node).getRelationship().putIfAbsent(node,relation);
+        }
+        if(node instanceof Company)
+        {
+            ((Company)node).addEmployee(this);
+        }
     }
 
     @Override
@@ -86,5 +97,11 @@ public class Person implements Node,Comparable<Person> {
     public int getWeight()
     {
         return relationship.size();
+    }
+
+    @Override
+    public List<Node> getAdjacencyList()
+    {
+        return new ArrayList<>(this.relationship.keySet());
     }
 }
