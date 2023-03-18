@@ -64,7 +64,7 @@ public class Person implements Node,Comparable<Person> {
             relationship.putIfAbsent(node,relation);
         if(node instanceof Person)
         {
-            ((Person)node).getRelationship().putIfAbsent(node,relation);
+            ((Person)node).getRelationship().putIfAbsent(this,relation);
         }
         if(node instanceof Company)
         {

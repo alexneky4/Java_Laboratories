@@ -9,6 +9,7 @@ import uaic.info.node.Node;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 public class Main {
     public static void main(String[] args)
@@ -57,18 +58,24 @@ public class Main {
         alex.addNewRelationship(mambu, "Graphical Designer");
         tudor.addNewRelationship(centric, "Internship");
 
-        Network network = new Network(new ArrayList<>(Arrays.asList(bitdefender, mambu, centric, razvan, alex ,tudor)));
+        Network network = new Network(Arrays.asList(bitdefender, mambu, centric, razvan, alex ,tudor));
         Algorithm algorithm = new Algorithm();
         for(Node node : algorithm.getCutPoints(network))
         {
             System.out.println("Cutpoint : " + node.toString());
         }
-        for(List<Node> component : algorithm.getBicconnectedComponents(network))
+
+        /*
+       for(Set<Node> component : algorithm.getBicconnectedComponents(network))
         {
             System.out.println("Bipartited component: ");
             for(Node node : component)
                 System.out.println(node.toString());
             System.out.println();
         }
+
+         */
+
+
     }
 }
