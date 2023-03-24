@@ -4,6 +4,8 @@ import uaic.info.projects.Project;
 import uaic.info.student.Student;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class ProblemInstance {
 
@@ -53,5 +55,31 @@ public class ProblemInstance {
                 ", students=" + students +
                 ", projects=" + projects +
                 '}';
+    }
+
+    public void generateRandomInstance()
+    {
+        int nrOfStudents = (int)Math.random() * 1000 + 1000;
+        int nrOfProjects = (int)Math.random() * 1000 + 1000;
+        int nrOfEdges = (int)Math.random() * (nrOfStudents * nrOfProjects) + 1;
+        this.students = IntStream.rangeClosed(0,nrOfStudents).mapToObj(i -> new Student("S" + String.valueOf(i)))
+                .sorted().collect(Collectors.toList());
+        this.projects = IntStream.rangeClosed(0,nrOfProjects).mapToObj(i -> new Project("P" + String.valueOf(i)))
+                .sorted().collect(Collectors.toList());
+        for(Student student : this.students)
+        {
+            List<Project> projectList = new ArrayList<>();
+            for(Project project : this.projects)
+            {
+                double decision = Math.random();
+                if(decision < 0.5)
+                    continue;
+                else
+                    projectList.add(project);
+            }
+
+            preferences.put(student,projectList);
+        }
+
     }
 }

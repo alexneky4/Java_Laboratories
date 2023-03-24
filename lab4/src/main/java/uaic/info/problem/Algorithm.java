@@ -185,4 +185,46 @@ public class Algorithm {
         return matching;
     }
 
+    public static Set<GraphNode> vertexCover(ProblemInstance instance)
+    {
+        Map<Student,Project> matching = maximumMatching(instance);
+        Set<GraphNode> vertexCover = new HashSet<>();
+        for(Student student : matching.keySet())
+        {
+            if(matching.get(student) != null)
+            {
+                vertexCover.add(student);
+                vertexCover.add(matching.get(student));
+            }
+
+        }
+        for(Project project : instance.getProjects())
+        {
+            if (vertexCover.contains(project))
+                vertexCover.remove(project);
+            else
+                vertexCover.add(project);
+        }
+
+        return vertexCover;
+    }
+
+    public static Set<GraphNode> stableSet(ProblemInstance instance)
+    {
+        Map<Student,Project> matching = maximumMatching(instance);
+        Set<GraphNode> stableSet = new HashSet<>();
+        for(Student student : matching.keySet())
+        {
+            if(matching.get(student) == null)
+                stableSet.add(student);
+
+        }
+        for(Project project : instance.getProjects())
+        {
+            if(!instance.getPreferences().containsValue(project))
+                stableSet.add(project);
+        }
+
+        return stableSet;
+    }
 }

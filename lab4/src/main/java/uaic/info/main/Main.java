@@ -45,8 +45,7 @@ public class Main {
         preferences.put(studentList.get(2),
                 Arrays.asList(projectList.get(0)));
 
-        instance.setPreferences(preferences);
-        System.out.println(instance.getPreferences());
-        System.out.println(Algorithm.maximumMatching(instance));
+        instance.generateRandomInstance();
+        System.out.println(instance);
     }
 }
