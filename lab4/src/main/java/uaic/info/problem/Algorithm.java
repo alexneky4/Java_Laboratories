@@ -189,23 +189,81 @@ public class Algorithm {
     {
         Map<Student,Project> matching = maximumMatching(instance);
         Set<GraphNode> vertexCover = new HashSet<>();
-        for(Student student : matching.keySet())
-        {
-            if(matching.get(student) != null)
-            {
-                vertexCover.add(student);
-                vertexCover.add(matching.get(student));
-            }
-
-        }
+        Map<GraphNode, Boolean> visited = new HashMap<>();
+        for(Student student : instance.getStudents())
+            visited.put(student,false);
+        for(Project project : instance.getProjects())
+            visited.put(project,false);
+        Deque<GraphNode> dfsTraversal = new ArrayDeque<>();
         for(Project project : instance.getProjects())
         {
-            if (vertexCover.contains(project))
-                vertexCover.remove(project);
-            else
+            if(matching.containsValue(project) == false && visited.get(project) == false)
+            {
+                visited.put(project,true);
+                dfsTraversal.push(project);
                 vertexCover.add(project);
+                while(dfsTraversal.isEmpty() == false)
+                {
+                    GraphNode node = dfsTraversal.peek();
+                    GraphNode nextNode = null;
+                    for(GraphNode adjacencyNode : instance.getAdjacencyList().get(node))
+                    {
+                        if(visited.get(adjacencyNode) == false)
+                        {
+                            visited.put(adjacencyNode,true);
+                            nextNode = adjacencyNode;
+                            break;
+                        }
+                    }
+                    if(nextNode != null)
+                    {
+                        if(matching.containsValue(nextNode) == false)
+                        {
+                            vertexCover.add(nextNode);
+                        }
+                        dfsTraversal.push(nextNode);
+                    }
+                    else dfsTraversal.pop();
+                }
+            }
         }
-
+        for(Student student : instance.getStudents())
+            visited.put(student,false);
+        for(Project project : instance.getProjects())
+            visited.put(project,false);
+        dfsTraversal = new ArrayDeque<>();
+        for(Student student : matching.keySet())
+        {
+            if(visited.get(student) == false && matching.get(student) != null)
+            {
+                visited.put(student,true);
+                dfsTraversal.push(student);
+                vertexCover.add(student);
+                while(dfsTraversal.isEmpty() == false)
+                {
+                    GraphNode node = dfsTraversal.peek();
+                    GraphNode nextNode = null;
+                    for(GraphNode adjacencyNode : instance.getAdjacencyList().get(node))
+                    {
+                        if(visited.get(adjacencyNode) == false)
+                        {
+                            visited.put(adjacencyNode,true);
+                            nextNode = adjacencyNode;
+                            break;
+                        }
+                    }
+                    if(nextNode != null)
+                    {
+                        if(matching.containsValue(nextNode) == false)
+                        {
+                            vertexCover.add(nextNode);
+                        }
+                        dfsTraversal.push(nextNode);
+                    }
+                    else dfsTraversal.pop();
+                }
+            }
+        }
         return vertexCover;
     }
 

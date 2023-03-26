@@ -10,11 +10,20 @@ import java.util.stream.IntStream;
 public class ProblemInstance {
 
     private Map<Student, List<Project>> preferences = new HashMap<>();
+    private Map<GraphNode, List<GraphNode>> adjacencyList = new HashMap<>();
     private List<Student> students = new LinkedList<>();
     private List<Project> projects = new ArrayList<>();
     public ProblemInstance()
     {
 
+    }
+
+    public Map<GraphNode, List<GraphNode>> getAdjacencyList() {
+        return adjacencyList;
+    }
+
+    public void setAdjacencyList(Map<GraphNode, List<GraphNode>> adjacencyList) {
+        this.adjacencyList = adjacencyList;
     }
 
     public Map<Student, List<Project>> getPreferences() {
@@ -41,9 +50,9 @@ public class ProblemInstance {
         this.projects = projects;
     }
 
-    private double averagePreference = preferences.keySet().stream().mapToInt(k ->preferences.get(k).size()).average().orElse(0);
 
     public void displayUnderAverage(){
+        double averagePreference = preferences.keySet().stream().mapToInt(k ->preferences.get(k).size()).average().orElse(0);
         preferences.keySet().stream().filter(k -> preferences.get(k).size() < averagePreference)
                 .forEach(System.out::println);
     }
@@ -66,6 +75,8 @@ public class ProblemInstance {
                 .sorted().collect(Collectors.toList());
         this.projects = IntStream.rangeClosed(0,nrOfProjects).mapToObj(i -> new Project("P" + String.valueOf(i)))
                 .sorted().collect(Collectors.toList());
+        for (Project project : this.projects)
+            this.adjacencyList.put(project,new ArrayList<>());
         for(Student student : this.students)
         {
             List<Project> projectList = new ArrayList<>();
@@ -74,11 +85,14 @@ public class ProblemInstance {
                 double decision = Math.random();
                 if(decision < 0.5)
                     continue;
-                else
+                else {
                     projectList.add(project);
+                    adjacencyList.get(project).add(student);
+                }
             }
 
             preferences.put(student,projectList);
+            adjacencyList.put(student,new ArrayList<>(projectList));
         }
 
     }
