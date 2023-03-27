@@ -1,21 +1,25 @@
 package uaic.info.document;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Document {
+public class Document implements Serializable{
 
     private String id;
     private String title;
     private String location;
 
-    private Map<String,Object> tags = new HashMap<>();
+    public Document() {
+    }
 
     public Document(String id, String title, String location) {
         this.id = id;
         this.title = title;
         this.location = location;
     }
+
+    private Map<String,Object> tags = new HashMap<>();
 
     public String getId() {
         return id;

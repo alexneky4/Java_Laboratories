@@ -11,6 +11,11 @@ public class Catalog implements Serializable {
     private String name;
     private List<Document> docs = new ArrayList<>();
 
+
+    public Catalog() {
+
+    }
+
     public Catalog(String name) {
         this.name = name;
     }
