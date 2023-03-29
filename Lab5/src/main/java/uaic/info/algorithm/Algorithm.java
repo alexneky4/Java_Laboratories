@@ -55,7 +55,11 @@ public class Algorithm {
 
         // Print the solution
         if (solution != null) {
-            System.out.println("Minimum number of colors: " + solution.getIntVal(numUsedColors));
+            int maxim = -1;
+            for(int i = 0; i < numberOfVertices; i++)
+                if(solution.getIntVal(colors[i]) > maxim)
+                    maxim = solution.getIntVal(colors[i]);
+            System.out.println("Minimum number of colors is :" + maxim);
             for (int i = 0; i < numberOfVertices; i++) {
                 System.out.println("Vertex " + i + " has color " + solution.getIntVal(colors[i]));
             }

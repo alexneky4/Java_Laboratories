@@ -146,7 +146,7 @@ public class FunctionalityTest {
 
         try
         {
-            ViewCommand.view("C:\\Users\\alexa\\Desktop\\JavaTest\\testing2");
+            ViewCommand.view("https://profs.info.uaic.ro/~acf/java/labs/lab_04.html");
         }
         catch (InvalidCatalogPathException e)
         {
