@@ -63,4 +63,5 @@ public class Algorithm {
             System.out.println("No solution found");
         }
     }
+
 }
