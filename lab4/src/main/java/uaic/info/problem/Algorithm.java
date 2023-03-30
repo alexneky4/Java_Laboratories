@@ -21,7 +21,8 @@ public class Algorithm {
     public static Map<Student, Project> greedyAlgorithm(ProblemInstance instance)
     {
         Map<Student,Project> greedyMatching = new HashMap<>();
-        instance.getPreferences().keySet().stream()
+        instance.getPreferences().keySet().stream().sorted((Student s1, Student s2) ->
+                        instance.getPreferences().get(s1).size() - instance.getPreferences().get(s2).size())
                 .forEach(s -> greedyMatching.put(s, instance.getPreferences().get(s).stream()
                         .filter(p -> greedyMatching.containsValue(p)).findFirst().orElse(null)));
         return greedyMatching;
@@ -269,17 +270,17 @@ public class Algorithm {
 
     public static Set<GraphNode> stableSet(ProblemInstance instance)
     {
-        Map<Student,Project> matching = maximumMatching(instance);
+       Set<GraphNode>  vertexCover = vertexCover(instance);
         Set<GraphNode> stableSet = new HashSet<>();
-        for(Student student : matching.keySet())
+        for(Student student : instance.getStudents())
         {
-            if(matching.get(student) == null)
+            if(vertexCover.contains(student) == false)
                 stableSet.add(student);
 
         }
         for(Project project : instance.getProjects())
         {
-            if(!instance.getPreferences().containsValue(project))
+            if(vertexCover.contains(project) == false)
                 stableSet.add(project);
         }
 

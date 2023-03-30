@@ -7,9 +7,6 @@ public class ListCommand implements CatalogCommand{
 
     public static void list(Catalog catalog)
     {
-        for(Document document : catalog.getDocs())
-        {
-            System.out.println(document);
-        }
+            System.out.println(catalog.getDocs());
     }
 }
