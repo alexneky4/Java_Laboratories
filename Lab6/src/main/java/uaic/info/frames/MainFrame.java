@@ -45,4 +45,8 @@ public class MainFrame extends JFrame {
         pack();
         setLocationRelativeTo(null);
     }
+
+    public void setCanvas(DrawingPanel canvas) {
+        this.canvas = canvas;
+    }
 }

@@ -62,14 +62,14 @@ public class FunctionalityTest {
         catalog.add(document2);
 
         try{
-            CatalogUtil.saveJSON(catalog,"C:\\Users\\alexa\\Desktop\\JavaTest\\testing.json");
+            CatalogUtil.saveJSON(catalog,"C:\\Users\\ADMIN\\Desktop\\JavaTest\\test.json");
         }
         catch (IOException e)
         {
             e.printStackTrace();
         }
         try {
-            Catalog catalog2 = CatalogUtil.loadJSON("C:\\Users\\alexa\\Desktop\\JavaTest\\testing.json");
+            Catalog catalog2 = CatalogUtil.loadJSON("C:\\\\Users\\\\ADMIN\\\\Desktop\\\\JavaTest\\\\test.json");
             System.out.println(catalog2);
         }
         catch (InvalidCatalogException e)

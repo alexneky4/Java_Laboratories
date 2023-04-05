@@ -9,13 +9,14 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
+import java.io.*;
 import java.util.*;
 import java.util.List;
 
-public class DrawingPanel extends JPanel {
+public class DrawingPanel extends JPanel implements Serializable {
 
     final MainFrame frame;
-    final static int W = 800, H = 600;
+    final static int W = 600, H = 400;
     private int numOfVertices;
     private double edgeProbability;
     private boolean firstPlayer = true;
@@ -115,7 +116,7 @@ public class DrawingPanel extends JPanel {
         lines.clear();
         coloredLines.put("Red", new HashSet<>());
         coloredLines.put("Blue", new HashSet<>());
-        //createOffScrrenImage();
+        createOffScrrenImage();
         createVertices();
         drawVertices();
         drawLines();
@@ -192,4 +193,35 @@ public class DrawingPanel extends JPanel {
         repaint();
     }
 
+    private void writeObject(ObjectOutputStream outputStream) throws IOException
+    {
+        outputStream.writeInt(numOfVertices);
+        outputStream.writeDouble(edgeProbability);
+        outputStream.writeBoolean(firstPlayer);
+        outputStream.writeObject(lines);
+        outputStream.writeObject(coloredLines);
+        outputStream.writeObject(x);
+        outputStream.writeObject(y);
+    }
+
+    private void readObject(ObjectInputStream inputStream) throws IOException,ClassNotFoundException
+    {
+        numOfVertices = inputStream.readInt();
+        edgeProbability = inputStream.readDouble();
+        firstPlayer = inputStream.readBoolean();
+        lines = (ArrayList<Line2D>)inputStream.readObject();
+        coloredLines = (Map<String, Set<Line2D>>)inputStream.readObject();
+        x = (int[])inputStream.readObject();
+        y = (int[])inputStream.readObject();
+    }
+
+    public int getNumOfVertices()
+    {
+        return numOfVertices;
+    }
+
+    public double getEdgeProbability()
+    {
+        return edgeProbability;
+    }
 }

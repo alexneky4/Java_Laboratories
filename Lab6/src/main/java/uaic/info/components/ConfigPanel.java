@@ -54,4 +54,14 @@ public class ConfigPanel extends JPanel {
     public JButton getCreateButton() {
         return createButton;
     }
+
+    public void setDotsSpinner(int newValue)
+    {
+        dotsSpinner.setValue(newValue);
+    }
+
+    public void setLinesCombo(double newValue)
+    {
+        linesCombo.setSelectedItem(newValue);
+    }
 }
