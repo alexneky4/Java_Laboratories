@@ -9,7 +9,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 
 public class DrawingPanel extends JPanel {
@@ -20,9 +20,10 @@ public class DrawingPanel extends JPanel {
     private double edgeProbability;
     private boolean firstPlayer = true;
     private List<Line2D> lines = new ArrayList<>();
+    private Map<String,Set<Line2D>> coloredLines = new HashMap<>();
     private int[] x,y;
 
-    private static final double CONSIDERED_CLICK = 5.0;
+    private static final double CONSIDERED_CLICK = 3.0;
     BufferedImage image;
     Graphics2D graphics;
 
@@ -48,21 +49,49 @@ public class DrawingPanel extends JPanel {
         );
 
         this.addMouseListener(new MouseAdapter() {
+            private boolean stopListening = false;
             @Override
             public void mouseClicked(MouseEvent e) {
+                if(stopListening == true)
+                    return;
                 for(Line2D line : lines)
                 {
-                    if(line.contains(e.getX(),e.getY()))
+
+                    if(line.ptSegDist(e.getPoint()) <= CONSIDERED_CLICK)
                     {
+
+                        String color;
                         if(firstPlayer == true)
+                        {
                             graphics.setColor(Color.RED);
+                            color = "Red";
+                        }
                         else
+                        {
                             graphics.setColor(Color.BLUE);
-                        firstPlayer = !firstPlayer;
+                            color = "Blue";
+                        }
+                        lines.remove(line);
                         graphics.draw(line);
+                        repaint();
+                        if(winningCondition(firstPlayer,line) == true)
+                        {
+                            String player = firstPlayer ? "Player one" : "Player two";
+                            int option = JOptionPane.showConfirmDialog(null,
+                                    player + " has won the game\nStart a new game?","Game finished",
+                                    JOptionPane.YES_NO_OPTION);
+                            if(option == JOptionPane.YES_OPTION)
+                                createBoard();
+                            else
+                                stopListening = true;
+                            firstPlayer = true;
+                            break;
+                        }
+                        firstPlayer = !firstPlayer;
+                        coloredLines.get(color).add(line);
+                        break;
                     }
                 }
-                repaint();
             }
         });
     }
@@ -83,11 +112,13 @@ public class DrawingPanel extends JPanel {
     {
         numOfVertices = (Integer) frame.getConfigPanel().getDotsSpinner().getValue();
         edgeProbability = (Double) frame.getConfigPanel().getLinesCombo().getSelectedItem();
-
-        createOffScrrenImage();
+        lines.clear();
+        coloredLines.put("Red", new HashSet<>());
+        coloredLines.put("Blue", new HashSet<>());
+        //createOffScrrenImage();
         createVertices();
-        drawLines();
         drawVertices();
+        drawLines();
         repaint();
     }
 
@@ -114,7 +145,6 @@ public class DrawingPanel extends JPanel {
                 {
                     Line2D line = new Line2D.Double(x[i],y[i],x[j],y[j]);
                     graphics.draw(line);
-
                     lines.add(line);
                 }
             }
@@ -127,6 +157,23 @@ public class DrawingPanel extends JPanel {
             graphics.fillOval(x[i],y[i], 10, 10);
     }
 
+    private boolean winningCondition(boolean firstPlayer,Line2D line)
+    {
+        String color;
+        if(firstPlayer == true)
+        {
+            color = "Red";
+        }
+        else color = "Blue";
+
+        long firstCoord = coloredLines.get(color).stream().filter(
+                l -> (l.getX1() == line.getX1() && l.getY1() == line.getY1())
+                        || (l.getX2() == line.getX1() && l.getY2() == line.getY1())).count();
+        long secondCoord = coloredLines.get(color).stream().filter(
+                l -> (l.getX1() == line.getX2() && l.getY1() == line.getY2())
+                        || (l.getX2() == line.getX2() && l.getY2() == line.getY2())).count();
+        return firstCoord > 0  && secondCoord > 0 ;
+    }
     @Override
     public void update(Graphics g) { }
 
@@ -134,4 +181,15 @@ public class DrawingPanel extends JPanel {
     protected void paintComponent(Graphics graphics) {
         graphics.drawImage(image, 0, 0, this);
     }
+
+    public void loadImage(BufferedImage image) {
+        // Clear the panel
+        graphics.setColor(Color.WHITE);
+        graphics.fillRect(0, 0, W, H);
+
+        // Draw the loaded image on the panel
+        graphics.drawImage(image, 0, 0, null);
+        repaint();
+    }
+
 }
