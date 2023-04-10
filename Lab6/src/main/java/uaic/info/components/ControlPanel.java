@@ -138,4 +138,3 @@ public class ControlPanel extends JPanel {
         out.close();
     }
 }
-
