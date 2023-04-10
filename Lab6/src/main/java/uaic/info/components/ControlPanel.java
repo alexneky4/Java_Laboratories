@@ -95,33 +95,31 @@ public class ControlPanel extends JPanel {
                 chooser.setAcceptAllFileFilterUsed(false);
                 if (chooser.showOpenDialog(e.getComponent()) == JFileChooser.APPROVE_OPTION) {
                     String selectedGame = chooser.getSelectedFile().toString();
-                    String imagePath = selectedGame + "/" + selectedGame + ".png";
-                    String gamePath = selectedGame + "/" + selectedGame + ".ser";
-                    System.out.println(selectedGame);
-                    System.out.println(imagePath);
-                    System.out.println(gamePath);
+                    String imagePath = selectedGame + "\\" + chooser.getSelectedFile().getName() + ".png";
+                    String gamePath = selectedGame + "\\" + chooser.getSelectedFile().getName() + ".ser";
+
                     try{
                         BufferedImage image = ImageIO.read(new File(imagePath));
 
-                        //ObjectInputStream in = new ObjectInputStream(new FileInputStream(gamePath));
-                        //frame.setCanvas((DrawingPanel) in.readObject());
+                        ObjectInputStream in = new ObjectInputStream(new FileInputStream(gamePath));
                         frame.getCanvas().loadImage(image);
+                        frame.setCanvas((DrawingPanel) in.readObject());
 
-                        //frame.getConfigPanel().setDotsSpinner(frame.getCanvas().getNumOfVertices());
-                       // frame.getConfigPanel().setLinesCombo(frame.getCanvas().getEdgeProbability());
+                        frame.getConfigPanel().setDotsSpinner(frame.getCanvas().getNumOfVertices());
+                        frame.getConfigPanel().setLinesCombo(frame.getCanvas().getEdgeProbability());
                     }
                     catch(IOException exception)
                     {
                         int option = JOptionPane.showConfirmDialog(e.getComponent(),"" +
                                 "Could not load the game","Wrong file type",JOptionPane.OK_OPTION);
                     }
-                   /* catch (ClassNotFoundException exception)
+                    catch (ClassNotFoundException exception)
                     {
                         int option = JOptionPane.showConfirmDialog(e.getComponent(),"" +
                                 "Could not load the game stats","Could not deserialize the datase",JOptionPane.OK_OPTION);
                     }
 
-                    */
+
                 }
 
             }
