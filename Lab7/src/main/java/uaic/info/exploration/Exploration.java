@@ -3,16 +3,18 @@ package uaic.info.exploration;
 import uaic.info.components.ExplorationMap;
 import uaic.info.components.SharedMemory;
 import uaic.info.robot.Robot;
+import uaic.info.robot.Supervisor;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class Exploration {
-    static private final int MAP_DIMENSION = 5;
+    static private final int MAP_DIMENSION = 10;
     private final SharedMemory memory = new SharedMemory(MAP_DIMENSION);
     private final ExplorationMap map = new ExplorationMap(MAP_DIMENSION);
     private final List<Robot> robots = new ArrayList<>();
+    private final Supervisor supervisor = new Supervisor(this);
 
     public int getMapDimension()
     {
@@ -25,6 +27,10 @@ public class Exploration {
 
     public ExplorationMap getMap() {
         return map;
+    }
+
+    public List<Robot> getRobots() {
+        return robots;
     }
 
     private void addRobot(Robot robot)
@@ -44,27 +50,20 @@ public class Exploration {
     }
     private void start() {
         List<Thread> threads = new ArrayList<>();
+        new Thread(supervisor).start();
         for(Robot robot : robots)
         {
             Thread t = new Thread(robot);
             threads.add(t);
             t.start();
         }
-        for(Thread thread : threads) {
-            try {
-                thread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+
     }
 
     public static void main(String args[])
     {
         var explore = new Exploration();
         explore.addRobot(new Robot("robot1"));
-        explore.addRobot(new Robot("robot2"));
-        explore.addRobot(new Robot("robot3"));
 
         explore.start();
 

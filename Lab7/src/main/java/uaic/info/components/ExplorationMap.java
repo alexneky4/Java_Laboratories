@@ -50,7 +50,7 @@ public class ExplorationMap {
         Cell cell = new Cell(extractedTokens);
         cell.setRobotOccupant(robot);
         matrix[row][column] = cell;
-        System.out.println("Celula [" + row + "][" + column + "] a fost vizitata de catre robotul " + robot.getName());
+
     }
 
     public Cell[][] getMatrix() {

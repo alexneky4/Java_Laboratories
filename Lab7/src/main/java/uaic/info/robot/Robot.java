@@ -19,6 +19,8 @@ public class Robot implements Runnable{
     private int currentCol;
     private final int[] directions = {-1, 0, 1};
 
+    public boolean isSleeping = false;
+
     public Robot(String name)
     {
         this.name = name;
@@ -38,48 +40,45 @@ public class Robot implements Runnable{
         this.currentCol = currentCol;
     }
 
-    public void run(){
-        while(running)
-        {
-            if(exploration.getMap().allVisited())
-            {
+    public void run() {
+        while (running) {
+            System.out.println("In run");
+            if (exploration.getMap().allVisited()) {
                 running = false;
                 continue;
             }
             List<Integer> possibleRows = new ArrayList<>();
             List<Integer> possibleCols = new ArrayList<>();
-            for(int i = 1; i <= 8; i++)
-            {
+            for (int i = 1; i <= 8; i++) {
                 int row = currentRow + directions[new Random().nextInt(3)];
                 int col = currentCol + directions[new Random().nextInt(3)];
 
-                if(row >= 0 && row < exploration.getMapDimension() && col >= 0 && col < exploration.getMapDimension()
-                    && exploration.getMap().isOccupied(row,col) == false)
-                {
+                if (row >= 0 && row < exploration.getMapDimension() && col >= 0 && col < exploration.getMapDimension()
+                        && !exploration.getMap().isOccupied(row, col)) {
                     possibleRows.add(row);
                     possibleCols.add(col);
                 }
             }
-                if(possibleRows.size() > 0)
-                {
-                    exploration.getMap().moveRobot(currentRow,currentCol);
-                    int random = new Random().nextInt(possibleRows.size());
-                    currentRow = possibleRows.get(random);
-                    currentCol = possibleCols.get(random);
+            if (possibleRows.size() > 0) {
+                exploration.getMap().moveRobot(currentRow, currentCol);
+                int random = new Random().nextInt(possibleRows.size());
+                currentRow = possibleRows.get(random);
+                currentCol = possibleCols.get(random);
 
-                    if(exploration.getMap().isVisited(currentRow,currentCol) == false)
-                    {
-
-                        exploration.getMap().setVisited(currentRow,currentCol,this);
+                if (!exploration.getMap().isVisited(currentRow, currentCol)) {
+                    exploration.getMap().setVisited(currentRow, currentCol, this);
+                }
+            }
+            try {
+                synchronized (this) {
+                    while (isSleeping) {
+                        wait();
                     }
                 }
-                try
-                {
-                    sleep(500);
-                } catch (InterruptedException e)
-                {
-                    e.printStackTrace();
-                }
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -87,4 +86,28 @@ public class Robot implements Runnable{
     {
         return exploration.getMemory().extractTokens(howMany);
     }
+
+    public synchronized void pauseWithTime(int time) {
+        System.out.println("In pause with time");
+        try {
+            isSleeping = true;
+            wait(time * 1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            isSleeping = false;
+        }
+    }
+
+    public synchronized void pause() {
+        System.out.println("In pause");
+        isSleeping = true;
+    }
+
+    public synchronized void resume() {
+        System.out.println("In resume");
+        isSleeping = false;
+        notify();
+    }
+
 }
