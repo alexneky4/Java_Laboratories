@@ -3,9 +3,8 @@ package uaic.info.robot;
 import uaic.info.components.Token;
 import uaic.info.exploration.Exploration;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.concurrent.Semaphore;
 
 import static java.lang.Thread.sleep;
 
@@ -19,7 +18,8 @@ public class Robot implements Runnable{
     private int currentCol;
     private final int[] directions = {-1, 0, 1};
 
-    public boolean isSleeping = false;
+    public volatile boolean isSleeping = false;
+    private Object pauseLock = new Object();
 
     public Robot(String name)
     {
@@ -69,15 +69,21 @@ public class Robot implements Runnable{
                     exploration.getMap().setVisited(currentRow, currentCol, this);
                 }
             }
-            try {
-                synchronized (this) {
-                    while (isSleeping) {
-                        wait();
+            synchronized (pauseLock)
+            {
+                while(isSleeping)
+                {
+                    try {
+                        pauseLock.wait();
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
                     }
                 }
-                Thread.sleep(500);
+            }
+            try {
+                Thread.sleep(3000);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         }
     }
@@ -87,27 +93,27 @@ public class Robot implements Runnable{
         return exploration.getMemory().extractTokens(howMany);
     }
 
-    public synchronized void pauseWithTime(int time) {
-        System.out.println("In pause with time");
-        try {
-            isSleeping = true;
-            wait(time * 1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } finally {
-            isSleeping = false;
-        }
-    }
 
-    public synchronized void pause() {
-        System.out.println("In pause");
+    public void pause() {
         isSleeping = true;
     }
-
-    public synchronized void resume() {
-        System.out.println("In resume");
+    public void  pauseWithTime(long duration) {
+        isSleeping = true;
+        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        try {
+            Thread.sleep(duration * 1000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        System.out.println("BBBBBBBBBBBBBBBBBBBBBBBB");
         isSleeping = false;
-        notify();
+    }
+
+    public void resume() {
+        synchronized (pauseLock) {
+            isSleeping = false;
+            pauseLock.notifyAll();
+        }
     }
 
 }
