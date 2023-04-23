@@ -18,8 +18,8 @@ public class Robot implements Runnable{
     private int currentCol;
     private final int[] directions = {-1, 0, 1};
 
+    private int numberOfColumnVisited = 0;
     public volatile boolean isSleeping = false;
-    private Object pauseLock = new Object();
 
     public Robot(String name)
     {
@@ -40,14 +40,28 @@ public class Robot implements Runnable{
         this.currentCol = currentCol;
     }
 
+    public int getNumberOfColumnVisited() {
+        return numberOfColumnVisited;
+    }
+
     public void run() {
         while (running) {
-            System.out.println("In run");
+            synchronized (this)
+            {
+                while(isSleeping)
+                {
+                    try {
+                        wait();
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                }
+            }
             if (exploration.getMap().allVisited()) {
                 running = false;
                 continue;
             }
-            List<Integer> possibleRows = new ArrayList<>();
+            /*List<Integer> possibleRows = new ArrayList<>();
             List<Integer> possibleCols = new ArrayList<>();
             for (int i = 1; i <= 8; i++) {
                 int row = currentRow + directions[new Random().nextInt(3)];
@@ -68,20 +82,17 @@ public class Robot implements Runnable{
                 if (!exploration.getMap().isVisited(currentRow, currentCol)) {
                     exploration.getMap().setVisited(currentRow, currentCol, this);
                 }
-            }
-            synchronized (pauseLock)
-            {
-                while(isSleeping)
-                {
-                    try {
-                        pauseLock.wait();
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                    }
-                }
+            }*/
+            int[] nextCell = exploration.getMap().findNearestEmptyCell(currentRow,currentCol);
+            exploration.getMap().moveRobot(currentRow,currentCol);
+            currentRow = nextCell[0];
+            currentCol = nextCell[1];
+            if (!exploration.getMap().isVisited(currentRow, currentCol)) {
+                exploration.getMap().setVisited(currentRow, currentCol, this);
+                numberOfColumnVisited++;
             }
             try {
-                Thread.sleep(3000);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -99,20 +110,17 @@ public class Robot implements Runnable{
     }
     public void  pauseWithTime(long duration) {
         isSleeping = true;
-        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         try {
             Thread.sleep(duration * 1000);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
-        System.out.println("BBBBBBBBBBBBBBBBBBBBBBBB");
         isSleeping = false;
     }
 
     public void resume() {
-        synchronized (pauseLock) {
+        synchronized (this) {
             isSleeping = false;
-            pauseLock.notifyAll();
         }
     }
 

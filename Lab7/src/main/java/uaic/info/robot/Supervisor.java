@@ -39,6 +39,22 @@ public class Supervisor implements Runnable{
         }
     }
 
+    public void pauseAllRobots()
+    {
+        for(Robot robot : exploration.getRobots())
+            robot.pause();
+    }
+
+    public void resumeAllRobots()
+    {
+        for(Robot robot : exploration.getRobots())
+        {
+            robot.resume();
+        }
+
+        exploration.getRobots().notifyAll();
+    }
+
     public void resumeRobot() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("What robot do you want to resume?");
@@ -52,6 +68,7 @@ public class Supervisor implements Runnable{
             System.out.println("The robot is not paused");
             return;
         }
+
         robot.resume();
         synchronized (robot) {
             robot.notify();
@@ -68,6 +85,8 @@ public class Supervisor implements Runnable{
             System.out.println("Choose one of the commands");
             System.out.println("1. Pause a robot");
             System.out.println("2. Resume a robot");
+            System.out.println("3. Pause all robots");
+            System.out.println("4. Resume all robots");
             Scanner scanner = new Scanner(System.in);
             int option = scanner.nextInt();
             switch(option) {
@@ -76,6 +95,12 @@ public class Supervisor implements Runnable{
                     break;
                 case 2:
                     resumeRobot();
+                    break;
+                case 3:
+                    pauseAllRobots();
+                    break;
+                case 4:
+                    resumeAllRobots();
                     break;
                 default:
                     System.out.println("Invalid option");
