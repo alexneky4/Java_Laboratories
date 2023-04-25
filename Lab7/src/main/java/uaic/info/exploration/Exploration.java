@@ -51,7 +51,7 @@ public class Exploration {
     }
     private void start() {
         List<Thread> threads = new ArrayList<>();
-        /*new Thread(supervisor).start();*/
+        new Thread(supervisor).start();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -84,7 +84,7 @@ public class Exploration {
     {
         var explore = new Exploration();
         explore.addRobot(new Robot("robot1"));
-        explore.addRobot(new Robot("robot2"));
+       // explore.addRobot(new Robot("robot2"));
         explore.start();
     }
 

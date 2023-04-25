@@ -46,6 +46,7 @@ public class Robot implements Runnable{
 
     public void run() {
         while (running) {
+
             synchronized (this)
             {
                 while(isSleeping)
@@ -83,6 +84,7 @@ public class Robot implements Runnable{
                     exploration.getMap().setVisited(currentRow, currentCol, this);
                 }
             }*/
+            System.out.println("In run");
             int[] nextCell = exploration.getMap().findNearestEmptyCell(currentRow,currentCol);
             exploration.getMap().moveRobot(currentRow,currentCol);
             currentRow = nextCell[0];
@@ -92,7 +94,7 @@ public class Robot implements Runnable{
                 numberOfColumnVisited++;
             }
             try {
-                Thread.sleep(500);
+                Thread.sleep(3000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

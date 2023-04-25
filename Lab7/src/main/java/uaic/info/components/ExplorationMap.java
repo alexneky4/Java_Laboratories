@@ -58,7 +58,7 @@ public class ExplorationMap {
         Cell cell = new Cell(extractedTokens);
         cell.setRobotOccupant(robot);
         matrix[row][column] = cell;
-        System.out.println("Cell [" + row + "][" + column + "] has been visited by " + robot.getName());
+        //System.out.println("Cell [" + row + "][" + column + "] has been visited by " + robot.getName());
     }
 
     public synchronized int[] findNearestEmptyCell(int row, int column)
