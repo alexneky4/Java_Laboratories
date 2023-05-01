@@ -1,5 +1,7 @@
 package uaic.info.database;
 
+import org.apache.commons.dbcp.BasicDataSource;
+
 import java.sql.*;
 
 public class Database {
@@ -30,6 +32,27 @@ public class Database {
         }
     }
 
+    private static void createConnectionPool()
+    {
+        try
+        {
+            BasicDataSource basicDataSource = new BasicDataSource();
+            basicDataSource.setUrl(url);
+            basicDataSource.setUsername(username);
+            basicDataSource.setPassword(password);
+            basicDataSource.setInitialSize(5);
+            basicDataSource.setMaxActive(10);
+            basicDataSource.setMaxIdle(5);
+            basicDataSource.setMinIdle(2);
+            basicDataSource.setMaxWait(1000);
+
+
+            connection = basicDataSource.getConnection();
+            connection.setAutoCommit(false);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
     public static void closeConnection()
     {
         try {

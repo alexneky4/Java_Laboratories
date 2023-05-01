@@ -7,4 +7,11 @@ public class Artist extends Entity{
         super(id,name);
     }
 
+    @Override
+    public String toString() {
+        return "Artist{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

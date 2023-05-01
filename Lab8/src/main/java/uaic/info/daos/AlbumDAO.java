@@ -3,6 +3,7 @@ package uaic.info.daos;
 import uaic.info.database.Database;
 import uaic.info.entities.Album;
 import uaic.info.entities.Artist;
+import uaic.info.entities.Genre;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -10,28 +11,45 @@ import java.util.List;
 
 public class AlbumDAO {
 
+    private GenreDAO genresDAO = new GenreDAO();
+    private ArtistDAO artistsDAO = new ArtistDAO();
     public Album create(int releaseYear, String title, String artist, String genre) throws SQLException
     {
         Connection connection = Database.getConnection();
+        String[] genres = genre.split("[,'\"]+");
+        Album album = findByTitleAndArtist(title, artist);
+        if(album != null)
+            return null;
+        artist = artist.trim();
+        artistsDAO.create(artist);
         try(PreparedStatement pstmt = connection.prepareStatement("insert into albums(release_year,title,artist,genre) values (?,?,?,?)"))
         {
             pstmt.setInt(1,releaseYear);
             pstmt.setString(2, title);
             pstmt.setString(3, artist);
-            pstmt.setString(4, genre);
+            pstmt.setString(4, genres[0]);
             pstmt.execute();
         }
-
-        Album album = findByTitleAndArtist(title, artist);
-        try(PreparedStatement pstmt = connection.prepareStatement("insert into album_genres values(?,?)"))
+        album = findByTitleAndArtist(title, artist);
+        try(PreparedStatement pstmt1 = connection.prepareStatement("insert into album_genres values(?,?)");
+            PreparedStatement pstmt2 = connection.prepareStatement("select * from album_genres where album_id = ? and genre_id = ?"))
         {
-            pstmt.setInt(1,album.getId());
-            for(int i = 0; i < album.getGenreList().size(); i++)
+            pstmt2.setInt(1,album.getId());
+            pstmt1.setInt(1,album.getId());
+            for(int i = 0; i < genres.length; i++)
             {
-                pstmt.setInt(2,album.getGenreList().get(i).getId());
-                pstmt.addBatch();
+                Genre genreAux = genresDAO.findByName(genres[i]);
+                if(genreAux == null)
+                    genreAux = genresDAO.create(genres[i]);
+                pstmt1.setInt(2, genreAux.getId());
+                pstmt2.setInt(2, genreAux.getId());
+                ResultSet rs = pstmt2.executeQuery();
+                if(rs.next())
+                {
+                    continue;
+                }
+                pstmt1.execute();
             }
-            pstmt.executeBatch();
         }
 
         return album;
@@ -42,19 +60,21 @@ public class AlbumDAO {
     {
         Connection connection = Database.getConnection();
         Album album;
-        try(Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("select * from albums where title = '" + title + "' and artist = '" + artist + "'"))
+        try(PreparedStatement preparedStatement = connection.prepareStatement("select * from albums where title = ? and artist = ?"))
         {
+            preparedStatement.setString(1, title);
+            preparedStatement.setString(2, artist);
+            ResultSet rs = preparedStatement.executeQuery();
             if(!rs.next())
                 return null;
                  album = new Album(rs.getInt(1),rs.getInt(2),rs.getString(3),
-                        new ArtistDAO().findByName(rs.getString(4)));
+                        artistsDAO.findByName(rs.getString(4)));
                 try(Statement stmt2 = connection.createStatement();
                     ResultSet rs2 = stmt2.executeQuery("select genre_id from album_genres where album_id = " + album.getId()))
                 {
                     while(rs2.next())
                     {
-                        album.addGenre(new GenreDAO().findById(rs2.getInt(1)));
+                        album.addGenre(genresDAO.findById(rs2.getInt(1)));
                     }
                 }
 
@@ -66,21 +86,22 @@ public class AlbumDAO {
     {
         Connection connection = Database.getConnection();
         List<Album> albums = null;
-        try(Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("select * from albums where title = '" + title + "'"))
+        try(PreparedStatement preparedStatement = connection.prepareStatement("select * from albums where title = ?"))
         {
+            preparedStatement.setString(1, title);
+            ResultSet rs = preparedStatement.executeQuery();
             while(rs.next())
             {
                 if(albums == null)
                     albums = new ArrayList<>();
                 Album album = new Album(rs.getInt(1),rs.getInt(2),rs.getString(3),
-                        new ArtistDAO().findByName(rs.getString(4)));
+                        artistsDAO.findByName(rs.getString(4)));
                 try(Statement stmt2 = connection.createStatement();
                     ResultSet rs2 = stmt2.executeQuery("select genre_id from album_genres where album_id = " + album.getId()))
                 {
                     while(rs2.next())
                     {
-                        album.addGenre(new GenreDAO().findById(rs2.getInt(1)));
+                        album.addGenre(genresDAO.findById(rs2.getInt(1)));
                     }
                 }
                 albums.add(album);
@@ -100,13 +121,13 @@ public class AlbumDAO {
                 if(rs.next() == false)
                     return null;
                 album = new Album(rs.getInt(1),rs.getInt(2),rs.getString(3),
-                        new ArtistDAO().findByName(rs.getString(4)));
+                        artistsDAO.findByName(rs.getString(4)));
                 try(Statement stmt2 = connection.createStatement();
                     ResultSet rs2 = stmt2.executeQuery("select genre_id from album_genres where album_id = " + album.getId()))
                 {
                     while(rs2.next())
                     {
-                        album.addGenre(new GenreDAO().findById(rs2.getInt(1)));
+                        album.addGenre(genresDAO.findById(rs2.getInt(1)));
                     }
                 }
         }
@@ -118,15 +139,16 @@ public class AlbumDAO {
     {
         Connection connection = Database.getConnection();
         List<Artist> artists = null;
-        try(Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("select artist from albums where title = '" + title + "'"))
+        try(PreparedStatement preparedStatement = connection.prepareStatement("select * from albums where title = ?"))
         {
+            preparedStatement.setString(1, title);
+            ResultSet rs = preparedStatement.executeQuery();
             while(rs.next())
             {
                 if(artists == null)
                     artists = new ArrayList<>();
                 else
-                    artists.add( new ArtistDAO().findByName(rs.getString(1)));
+                    artists.add(artistsDAO.findByName(rs.getString(1)));
             }
         }
 
@@ -135,23 +157,25 @@ public class AlbumDAO {
 
     public List<Album> findAlbumsByArtist(String name) throws SQLException
     {
+
         Connection connection = Database.getConnection();
         List<Album> albums = null;
-        try(Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("select title from albums where artist = '" + name + "'"))
+        try(PreparedStatement preparedStatement = connection.prepareStatement("select title from albums where artist = ?"))
         {
+            preparedStatement.setString(1, name);
+            ResultSet rs = preparedStatement.executeQuery();
             while(rs.next())
             {
                 if(albums == null)
                     albums = new ArrayList<>();
                 Album album = new Album(rs.getInt(1),rs.getInt(2),rs.getString(3),
-                        new ArtistDAO().findByName(rs.getString(4)));
+                       artistsDAO.findByName(rs.getString(4)));
                 try(Statement stmt2 = connection.createStatement();
                     ResultSet rs2 = stmt2.executeQuery("select genre_id from album_genres where album_id = " + album.getId()))
                 {
                     while(rs2.next())
                     {
-                        album.addGenre(new GenreDAO().findById(rs2.getInt(1)));
+                        album.addGenre(genresDAO.findById(rs2.getInt(1)));
                     }
                 }
                 albums.add(album);

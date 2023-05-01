@@ -43,4 +43,12 @@ public class Album extends Entity{
         genreList.add(genre);
     }
 
+    @Override
+    public String toString() {
+        return "Album{" +
+                "releaseYear=" + releaseYear +
+                ", artist=" + artist +
+                ", genreList=" + genreList +
+                '}';
+    }
 }

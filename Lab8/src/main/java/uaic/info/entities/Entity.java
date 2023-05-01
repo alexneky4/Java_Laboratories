@@ -2,8 +2,8 @@ package uaic.info.entities;
 
 public abstract class Entity {
 
-    private int id;
-    private String name;
+    protected int id;
+    protected String name;
 
 
     public Entity(int id,String name) {
