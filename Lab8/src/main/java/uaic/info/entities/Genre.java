@@ -14,4 +14,6 @@ public class Genre extends Entity{
                 ", name='" + name + '\'' +
                 '}';
     }
+
+
 }

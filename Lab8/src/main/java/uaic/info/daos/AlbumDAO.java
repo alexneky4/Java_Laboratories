@@ -184,4 +184,34 @@ public class AlbumDAO {
         return albums;
     }
 
+    public List<Album> findAll() throws SQLException
+    {
+        Connection connection = Database.getConnection();
+        List<Album> albums = null;
+        try(Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery("select id,release_year,title,artist,genre from albums"))
+        {
+            while(rs.next())
+            {
+                if(albums == null)
+                    albums = new ArrayList<>();
+                Artist artist = artistsDAO.findByName(rs.getString(4));
+                List<Genre> genres = new ArrayList<>();
+                genres.add(genresDAO.findByName(rs.getString(5)));
+                try(PreparedStatement pstmt = connection.prepareStatement("select genre_id from album_genres where album_id = ?"))
+                {
+                    pstmt.setInt(1,rs.getInt(1));
+                    ResultSet rs2 = pstmt.executeQuery();
+                    while(rs2.next())
+                        genres.add(genresDAO.findById(rs2.getInt(1)));
+                }
+                Album album = new Album(rs.getInt(1),
+                        rs.getInt(2), rs.getString(3),artist);
+                album.setGenreList(genres);
+                albums.add(album);
+
+            }
+            return albums;
+        }
+    }
 }

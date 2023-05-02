@@ -51,15 +51,14 @@ public class GenreDAO{
     public List<Genre> findAll(String name) throws SQLException {
         Connection connection = Database.getConnection();
         List<Genre> genres = null;
-        try(PreparedStatement preparedStatement = connection.prepareStatement("select id from genres where name = ?"))
+        try(Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery("select id,name from genres"))
         {
-            preparedStatement.setString(1, name);
-            ResultSet rs =  preparedStatement.executeQuery();
             while(rs.next())
             {
                 if(genres == null)
                     genres = new ArrayList<>();
-                genres.add(new Genre(rs.getInt(1),name));
+                genres.add(new Genre(rs.getInt(1),rs.getString(2)));
             }
             return genres;
         }

@@ -2,6 +2,7 @@ package uaic.info.entities;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Album extends Entity{
 
@@ -50,5 +51,19 @@ public class Album extends Entity{
                 ", artist=" + artist +
                 ", genreList=" + genreList +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Album album = (Album) o;
+        return releaseYear == album.releaseYear && Objects.equals(artist, album.artist) && Objects.equals(genreList, album.genreList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), releaseYear, artist, genreList);
     }
 }

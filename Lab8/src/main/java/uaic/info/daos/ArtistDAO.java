@@ -45,18 +45,17 @@ public class ArtistDAO{
         }
     }
 
-    public List<Artist> findAll(String name) throws SQLException {
+    public List<Artist> findAll() throws SQLException {
         Connection connection = Database.getConnection();
         List<Artist> artists = null;
-        try(PreparedStatement preparedStatement = connection.prepareStatement("select id from artists where name = ?"))
+        try(Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery("select id,name from artists"))
         {
-            preparedStatement.setString(1, name);
-            ResultSet rs =  preparedStatement.executeQuery();
             while(rs.next())
             {
                 if(artists == null)
                     artists = new ArrayList<>();
-                artists.add(new Artist(rs.getInt(1),name));
+                artists.add(new Artist(rs.getInt(1),rs.getString(2)));
             }
             return artists;
         }

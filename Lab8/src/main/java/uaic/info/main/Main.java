@@ -1,5 +1,6 @@
 package uaic.info.main;
 
+import uaic.info.algorithm.Algorithm;
 import uaic.info.daos.AlbumDAO;
 import uaic.info.daos.ArtistDAO;
 import uaic.info.daos.GenreDAO;
@@ -8,8 +9,10 @@ import uaic.info.database.ImportTool;
 import uaic.info.entities.Album;
 import uaic.info.entities.Artist;
 import uaic.info.entities.Genre;
+import uaic.info.entities.Playlist;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public class Main {
     public static void main(String args[]) {
@@ -36,11 +39,14 @@ public class Main {
 //            System.out.println(album1);
 //            System.out.println(album2);
 
-            ImportTool importTool = new ImportTool();
-            importTool.importAlbumDatabase("C:\\Users\\alexa\\Desktop\\albumlist.csv");
-            Database.getConnection().commit();
-            Database.printElementsTable("albums");
-            Database.closeConnection();
+//            ImportTool importTool = new ImportTool();
+//            importTool.importAlbumDatabase("C:\\Users\\alexa\\Desktop\\albumlist.csv");
+//            Database.getConnection().commit();
+//            Database.printElementsTable("albums");
+//            Database.closeConnection();
+            List<Playlist> maximalPlayLists = Algorithm.maximalPlaylists(new AlbumDAO().findAll());
+            for(Playlist playlist : maximalPlayLists)
+                System.out.println(playlist);
         } catch (SQLException e) {
             e.printStackTrace();
             try {

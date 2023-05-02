@@ -1,5 +1,7 @@
 package uaic.info.entities;
 
+import java.util.Objects;
+
 public abstract class Entity {
 
     protected int id;
@@ -25,5 +27,18 @@ public abstract class Entity {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Entity entity = (Entity) o;
+        return id == entity.id && Objects.equals(name, entity.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 }
