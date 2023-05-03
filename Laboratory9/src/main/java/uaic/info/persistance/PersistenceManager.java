@@ -8,7 +8,7 @@ public class PersistenceManager {
     private EntityManagerFactory emFactory;
 
     private PersistenceManager() {
-        emFactory = Persistence.createEntityManagerFactory("myPersistenceUnit");
+        emFactory = Persistence.createEntityManagerFactory("ExamplePU");
     }
 
     public static PersistenceManager getInstance() {

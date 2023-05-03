@@ -8,12 +8,12 @@ import java.io.Serializable;
 @Entity
 @Table(name = "ARTISTS")
 @SequenceGenerator(name="artist_seq", sequenceName = "ARTIST_SEQUENCE", allocationSize = 1)
-//@NamedQueries({
-//        @NamedQuery(name = "Artist.findAll",
-//                query = "select e from Artist e order by e.name"),
-//        @NamedQuery(name = "Artist.findByName",
-//                query = "select e from Artist e where e.name = ?1")
-//})
+@NamedQueries({
+        @NamedQuery(name = "Artist.findAll",
+                query = "select e from Artist e order by e.name"),
+        @NamedQuery(name = "Artist.findByName",
+                query = "select e from Artist e where e.name = ?1")
+})
 public class Artist implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "artist_seq")

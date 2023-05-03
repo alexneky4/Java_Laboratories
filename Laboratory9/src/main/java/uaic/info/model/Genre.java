@@ -7,10 +7,10 @@ import java.io.Serializable;
 @Entity
 @Table(name = "GENRES")
 @SequenceGenerator(name="genre_seq", sequenceName = "GENRE_SEQUENCE", allocationSize = 1)
-//@NamedQueries({
-//        @NamedQuery(name = "Genre.findAll",
-//                query = "select e from Genre e order by e.name"),
-//})
+@NamedQueries({
+        @NamedQuery(name = "Genre.findAll",
+                query = "select e from Genre e order by e.name"),
+})
 public class Genre implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "genre_seq")

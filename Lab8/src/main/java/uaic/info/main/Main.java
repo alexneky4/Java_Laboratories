@@ -40,12 +40,12 @@ public class Main {
 //            System.out.println(album2);
 
 //            ImportTool importTool = new ImportTool();
-//            importTool.importAlbumDatabase("C:\\Users\\alexa\\Desktop\\albumlist.csv");
+//            importTool.importAlbumDatabase("C:\\Users\\ADMIN\\Desktop\\albumlist.csv");
 //            Database.getConnection().commit();
 //            Database.printElementsTable("albums");
 //            Database.closeConnection();
             List<Playlist> maximalPlayLists = Algorithm.maximalPlaylists(new AlbumDAO().findAll());
-            for(Playlist playlist : maximalPlayLists)
+            for (Playlist playlist : maximalPlayLists)
                 System.out.println(playlist);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -54,6 +54,9 @@ public class Main {
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
         }
     }
 }
