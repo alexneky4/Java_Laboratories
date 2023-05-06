@@ -12,9 +12,9 @@ import java.io.Serializable;
         @NamedQuery(name = "Artist.findAll",
                 query = "select e from Artist e order by e.name"),
         @NamedQuery(name = "Artist.findByName",
-                query = "select e from Artist e where e.name = ?1")
+                query = "select e from Artist e where e.name = :name")
 })
-public class Artist implements Serializable {
+public class Artist implements Serializable,AbstractEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "artist_seq")
     @Column(name = "id")
@@ -30,7 +30,6 @@ public class Artist implements Serializable {
     public Artist() {
 
     }
-
 
     public String getName() {
         return name;

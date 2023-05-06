@@ -10,8 +10,10 @@ import java.io.Serializable;
 @NamedQueries({
         @NamedQuery(name = "Genre.findAll",
                 query = "select e from Genre e order by e.name"),
+        @NamedQuery(name = "Genre.findByName",
+                query = "select  e from Genre e where e.name = :name")
 })
-public class Genre implements Serializable {
+public class Genre implements Serializable,AbstractEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "genre_seq")
     @Column(name = "id")
@@ -20,21 +22,12 @@ public class Genre implements Serializable {
     @Column(name = "name")
     private String name;
 
-    public Genre(Integer id, String name) {
-        this.id = id;
+    public Genre(String name) {
         this.name = name;
     }
 
     public Genre() {
 
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getName() {
