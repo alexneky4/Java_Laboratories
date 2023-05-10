@@ -17,7 +17,7 @@ public class ClientThread extends Thread{
 
     private Game game;
     private Player player;
-    private static final List<Game> availableGames = new LinkedList<>();
+    private static List<Game> availableGames = new LinkedList<>();
     public ClientThread(Socket socket)
     {
         this.socket = socket;
@@ -45,7 +45,7 @@ public class ClientThread extends Thread{
                         out.flush();
                         String name = in.readLine();
                         in.readLine();
-                        this.player = new Player(name);
+                        this.player = new Player(name,this.socket);
                         this.game = new Game(player);
                         availableGames.add(game);
                         out.println("Waiting for the second player to connect");
@@ -55,7 +55,7 @@ public class ClientThread extends Thread{
                                 break;
                         }
                         out.println("The game can start");
-//                        game.startGame();
+                        game.startGame();
                     }
                 }
 //                if(request.equals("stop"))
@@ -67,7 +67,6 @@ public class ClientThread extends Thread{
 //                }
 //                out.println(response);
 //                out.flush();
-                    break;
             } catch (IOException e){
                 e.printStackTrace();
             }
