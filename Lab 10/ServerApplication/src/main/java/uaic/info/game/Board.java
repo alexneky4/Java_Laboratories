@@ -6,11 +6,13 @@ import java.util.Arrays;
 public class Board {
 
     private int[][] board;
+    private int dimension;
 
     public Board(int dimension) {
         board = new int[dimension][dimension];
         for (int[] row : board)
             Arrays.fill(row, 0);
+        this.dimension = dimension;
     }
 
     public int[][] getBoard() {
@@ -21,7 +23,15 @@ public class Board {
         this.board = board;
     }
 
-    public void makeMove(int piece,int row, int col)
+    public int getDimension() {
+        return dimension;
+    }
+
+    public void setDimension(int dimension) {
+        this.dimension = dimension;
+    }
+
+    public void makeMove(int piece, int row, int col)
     {
         board[row][col] = piece;
     }
@@ -37,11 +47,23 @@ public class Board {
 
     public void displayBoard(PrintWriter out)
     {
+
         for(int i = 0; i < board.length; i++)
         {
-            for(int j = 0; j < board[0].length; j++)
-                out.print(board[i][j] + " ");
-            out.println();
+            String line = "";
+            for(int j = 0; j < board[i].length; j++)
+               line = line + board[i][j] + " ";
+            out.println(line);
+            out.flush();
         }
+    }
+
+    public boolean isFull()
+    {
+        for(int i = 0; i < board.length; i++)
+            for(int j = 0; j < board[i].length; j++)
+                if(board[i][j] == 0)
+                    return false;
+        return true;
     }
 }

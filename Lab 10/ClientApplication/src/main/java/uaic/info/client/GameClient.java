@@ -7,47 +7,52 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import static java.lang.System.exit;
 
 public class GameClient {
 
     public static void main(String[] args) {
-        String serverAddress = "127.0.0.1";
-        int PORT = 8100;
-        while(true)
-        {
-            System.out.println("Alegeti una dintre optiuni:");
-            System.out.println("1.Create game");
-            System.out.println("2.Join game");
-            System.out.println("3.Submit move");
-            System.out.println("4.Stop");
-            Scanner scanner = new Scanner(System.in);
-            int option = scanner.nextInt();
-            try (
-                    Socket socket = new Socket(serverAddress, PORT);
-                    PrintWriter out =
-                            new PrintWriter(socket.getOutputStream(), true);
-                    BufferedReader in = new BufferedReader (
-                            new InputStreamReader(socket.getInputStream())) ) {
-                String request = null;
-                switch (option)
-                {
-                    case 1: request = "create game"; break;
-                    case 2: request = "join game"; break;
-                    case 3: request = "submit move"; break;
-                    case 4: request = "stop"; break;
-                }
-                out.println(request);
-                String response = in.readLine ();
-                System.out.println(response);
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
-            } catch (IOException e)
-            {
-                e.printStackTrace();
-            }
-            if(option == 4)
-                break;
-        }
+        String serverAddress = "127.0.0.1"; // The server's IP address
+        int PORT = 8100; // The server's port
+        try (Socket socket = new Socket(serverAddress, PORT);
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
 
+            AtomicBoolean serverClosed = new AtomicBoolean(false);
+            Thread inputThread = new Thread(() -> {
+                try {
+                    String line;
+                    while ((line = in.readLine()) != null) {
+                        System.out.println(line);
+                        System.out.flush();
+                    }
+                } catch (IOException e) {
+                    System.out.println("The server has closed!");
+                }
+                serverClosed.set(true);
+            });
+
+            inputThread.start();
+
+            while (!serverClosed.get()) {
+                String command = reader.readLine();
+                if (command.equals("exit")) {
+                    socket.close();
+                    System.out.println("Client exited");
+                    exit(0);
+                }
+
+                out.println(command);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
+
+
+
+
