@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 public class Timer extends Thread {
-    private final static long MAX_TIME = 1000 * 60;
+    private final static long MAX_TIME = 1000 * 60 * 10;
     private volatile int currentPlayer;
     private long timeLeft[] = new long[2];
     private Game game;

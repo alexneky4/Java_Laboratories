@@ -62,12 +62,15 @@ public class ClientThread extends Thread{
 
     private synchronized Game connectToGame()
     {
-        return availableGames.remove(0);
+
+        return availableGames.isEmpty() ? null : availableGames.remove(0);
     }
 
     public void commandExecutor(String response)
     {
         response = response.trim().toLowerCase();
+        if(game != null && game.isGameFinished() == true)
+            game = null;
         if(response.equals("create game")) {
             createGame();
         }
@@ -120,11 +123,18 @@ public class ClientThread extends Thread{
             return;
         }
         try{
+            this.game = connectToGame();
+            if(game == null)
+            {
+                out.println("There is no game you can join");
+                out.flush();
+                return;
+            }
             out.println("Give the name of the player:");
             out.flush();
             String name = in.readLine();
             this.player = new Player(name, this.socket);
-            this.game = connectToGame();
+
             this.game.setPlayer2(player);
             out.println("You connected successfully. The game will start");
             out.flush();
